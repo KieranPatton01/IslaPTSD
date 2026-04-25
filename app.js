@@ -1,16 +1,6 @@
-/* ============================================================
-   ISLA PTSD — App Logic
-   ============================================================
-   SETUP (two things to change before pushing to GitHub):
 
-   1. PIN  — set your chosen code below, e.g. '0103' for 3rd Jan
-   2. GIST_URL — paste the raw URL of your GitHub Gist JSON file
-                 It looks like:
-                 https://gist.githubusercontent.com/USERNAME/GIST_ID/raw/data.json
-   ============================================================ */
-
-const PIN      = '2802';          // ← set your PIN here
-const GIST_URL = 'https://gist.githubusercontent.com/KieranPatton01/552ef018e65064b38dd46ed29ea0bb3d/raw/gistfile1.json'; // ← paste raw Gist URL here
+const PIN      = '2802';
+const GIST_URL = 'https://gist.githubusercontent.com/KieranPatton01/552ef018e65064b38dd46ed29ea0bb3d/raw/gistfile1.json';
 
 /* ============================================================
    STATE
@@ -101,16 +91,24 @@ async function loadBook() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
-    // Build pages array: [cover, ...entries]
+    // Build pages array: [cover, contents, ...entries]
     pages = [{ type: 'cover', ...data.cover }];
-    data.entries.forEach((entry, idx) => {
-      pages.push({
-        type:   'entry',
-        number: idx + 1,
-        total:  data.entries.length,
-        ...entry,
-      });
+
+    // Contents page references entry titles — built after entries are known
+    const entries = data.entries.map((entry, idx) => ({
+      type:   'entry',
+      number: idx + 1,
+      total:  data.entries.length,
+      pageIndex: idx + 2, // cover=0, contents=1, entries start at 2
+      ...entry,
+    }));
+
+    pages.push({
+      type:    'contents',
+      entries: entries.map(e => ({ title: e.title, pageIndex: e.pageIndex, number: e.number })),
     });
+
+    entries.forEach(e => pages.push(e));
 
     loadingEl.classList.add('hidden');
     document.getElementById('book-screen').classList.remove('hidden');
@@ -143,9 +141,9 @@ function renderPage(direction) {
   if (direction === 'next') newPage.classList.add('enter-right');
   if (direction === 'prev') newPage.classList.add('enter-left');
 
-  newPage.innerHTML = data.type === 'cover'
-    ? buildCover(data)
-    : buildEntry(data);
+  newPage.innerHTML = data.type === 'cover'    ? buildCover(data)
+                   : data.type === 'contents' ? buildContents(data)
+                   : buildEntry(data);
 
   const existing = wrapper.querySelector('.page');
 
@@ -177,15 +175,57 @@ function renderPage(direction) {
 
   updateIndicator();
   updateNavButtons();
+
+  // Wire up contents row taps (must happen after innerHTML is set)
+  wrapper.querySelectorAll('.contents-row').forEach(row => {
+    row.addEventListener('click', () => navigateTo(parseInt(row.dataset.page)));
+  });
+}
+
+/* ---- Contents template ---- */
+function buildContents(d) {
+  const rows = d.entries.map(e => `
+    <li class="contents-row" data-page="${e.pageIndex}">
+      <span class="contents-num">${String(e.number).padStart(2, '0')}</span>
+      <span class="contents-dots"></span>
+      <span class="contents-title">${e.title}</span>
+    </li>`).join('');
+
+  return `
+    <div class="page-contents">
+      <div class="corner-ornament tl"></div>
+      <div class="corner-ornament tr"></div>
+      <div class="corner-ornament bl"></div>
+      <div class="corner-ornament br"></div>
+
+      <h2 class="contents-heading">Contents</h2>
+
+      <div class="entry-divider" style="margin-bottom:20px">
+        <span class="divider-line"></span>
+        <span class="divider-star">✦ ✦ ✦</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <ol class="contents-list">${rows}</ol>
+    </div>`;
+}
+
+/* ---- Navigate to a specific page index ---- */
+function navigateTo(index) {
+  if (isAnimating || index === currentIndex) return;
+  const direction = index > currentIndex ? 'next' : 'prev';
+  isAnimating  = true;
+  currentIndex = index;
+  renderPage(direction);
 }
 
 /* ---- Cover template ---- */
 function buildCover(d) {
   const photo = d.photo
-    ? `<img src="${d.photo}" alt="Us" class="cover-photo">`
+    ? `<img src="${d.photo}" alt="crush" class="cover-photo">`
     : `<div class="photo-placeholder">
          <span class="emoji">📷</span>
-         <span class="ph-text">add your photo URL to the Gist</span>
+         <span class="ph-text">img url error</span>
        </div>`;
 
   return `
@@ -207,7 +247,7 @@ function buildCover(d) {
         <span class="cover-rule-ornament">✦ ✦ ✦</span>
       </div>
 
-      <p class="cover-subtitle">${d.subtitle || 'a collection of our moments'}</p>
+      <p class="cover-subtitle">${d.subtitle || 'E-SookBook'}</p>
     </div>`;
 }
 
@@ -262,8 +302,10 @@ function updateIndicator() {
 
   if (currentIndex === 0) {
     el.textContent = 'cover';
+  } else if (currentIndex === 1) {
+    el.textContent = 'contents';
   } else {
-    el.textContent = `${currentIndex} of ${pages.length - 1}`;
+    el.textContent = `${currentIndex - 1} of ${pages.length - 2}`;
   }
 }
 
