@@ -81,38 +81,43 @@ function checkPin() {
 /* ============================================================
    GIST LOADING
    ============================================================ */
+const CACHE_KEY = 'isla-ptsd-data';
+
 async function loadBook() {
   const loadingEl = document.getElementById('loading-screen');
   loadingEl.classList.remove('hidden');
 
+  // Check for cached data first
+  const cached = localStorage.getItem(CACHE_KEY);
+
+  if (cached) {
+    // Use cached data immediately — no network needed
+    try {
+      const data = JSON.parse(cached);
+      buildPages(data);
+      loadingEl.classList.add('hidden');
+      document.getElementById('book-screen').classList.remove('hidden');
+      renderPage(null);
+      return;
+    } catch (e) {
+      // Cached data was corrupted — clear it and fall through to fetch
+      localStorage.removeItem(CACHE_KEY);
+    }
+  }
+
+  // No cache — fetch from Gist and save for all future visits
   try {
-    // Cache-bust to always get fresh content
-    const res  = await fetch(GIST_URL + '?t=' + Date.now());
+    const res  = await fetch(GIST_URL);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
-    // Build pages array: [cover, contents, ...entries]
-    pages = [{ type: 'cover', ...data.cover }];
+    // Save to localStorage so it's available offline forever
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
 
-    // Contents page references entry titles — built after entries are known
-    const entries = data.entries.map((entry, idx) => ({
-      type:   'entry',
-      number: idx + 1,
-      total:  data.entries.length,
-      pageIndex: idx + 2, // cover=0, contents=1, entries start at 2
-      ...entry,
-    }));
-
-    pages.push({
-      type:    'contents',
-      entries: entries.map(e => ({ title: e.title, pageIndex: e.pageIndex, number: e.number })),
-    });
-
-    entries.forEach(e => pages.push(e));
-
+    buildPages(data);
     loadingEl.classList.add('hidden');
     document.getElementById('book-screen').classList.remove('hidden');
-    renderPage(null); // initial render, no direction
+    renderPage(null);
 
   } catch (err) {
     console.error('Failed to load Gist:', err);
@@ -120,10 +125,29 @@ async function loadBook() {
       <div class="loading-inner">
         <p class="loading-text" style="color:rgba(220,100,80,0.75)">
           couldn't open the book.<br>
-          <small style="opacity:0.6;font-size:0.7em">check your GIST_URL in app.js</small>
+          <small style="opacity:0.6;font-size:0.7em">needs internet on first open</small>
         </p>
       </div>`;
   }
+}
+
+function buildPages(data) {
+  pages = [{ type: 'cover', ...data.cover }];
+
+  const entries = data.entries.map((entry, idx) => ({
+    type:      'entry',
+    number:    idx + 1,
+    total:     data.entries.length,
+    pageIndex: idx + 2,
+    ...entry,
+  }));
+
+  pages.push({
+    type:    'contents',
+    entries: entries.map(e => ({ title: e.title, pageIndex: e.pageIndex, number: e.number })),
+  });
+
+  entries.forEach(e => pages.push(e));
 }
 
 /* ============================================================
@@ -222,10 +246,10 @@ function navigateTo(index) {
 /* ---- Cover template ---- */
 function buildCover(d) {
   const photo = d.photo
-    ? `<img src="${d.photo}" alt="crush" class="cover-photo">`
+    ? `<img src="${d.photo}" alt="Us" class="cover-photo">`
     : `<div class="photo-placeholder">
          <span class="emoji">📷</span>
-         <span class="ph-text">img url error</span>
+         <span class="ph-text">add your photo URL to the Gist</span>
        </div>`;
 
   return `
@@ -247,7 +271,7 @@ function buildCover(d) {
         <span class="cover-rule-ornament">✦ ✦ ✦</span>
       </div>
 
-      <p class="cover-subtitle">${d.subtitle || 'E-SookBook'}</p>
+      <p class="cover-subtitle">${d.subtitle || 'a collection of our moments'}</p>
     </div>`;
 }
 
