@@ -1,0 +1,576 @@
+/* ============================================================
+   ISLA PTSD — Stylesheet
+   ============================================================ */
+
+/* --- Reset & Root --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg:         #0d0a05;
+  --gold:       #c9a844;
+  --gold-dim:   rgba(201, 168, 68, 0.3);
+  --gold-glow:  rgba(201, 168, 68, 0.12);
+  --gold-dark:  #9a7828;
+  --cream:      #f7efdf;
+  --cream-warm: #f2e6cc;
+  --ink:        #2a1a0f;
+  --ink-mid:    #5c3d2e;
+  --ink-light:  #8a6a56;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: 'Lora', Georgia, serif;
+  color: var(--ink);
+  overscroll-behavior: none;
+}
+
+.hidden { display: none !important; }
+
+/* ============================================================
+   PIN SCREEN
+   ============================================================ */
+#pin-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  z-index: 200;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.pin-bg-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 50%,
+    rgba(201, 168, 68, 0.07) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.pin-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  max-width: 340px;
+  width: 100%;
+}
+
+.pin-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(2rem, 8vw, 2.8rem);
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.pin-subtitle {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: 0.78rem;
+  color: rgba(247, 239, 223, 0.38);
+  text-align: center;
+  letter-spacing: 0.06em;
+}
+
+/* PIN dots */
+.pin-dots {
+  display: flex;
+  gap: 16px;
+  margin: 6px 0 0;
+}
+
+.pin-dots .dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  background: transparent;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pin-dots .dot.filled {
+  background: var(--gold);
+  box-shadow: 0 0 12px rgba(201, 168, 68, 0.5);
+}
+
+.pin-dots.shake {
+  animation: shake 0.45s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px); }
+  60%       { transform: translateX(-5px); }
+  80%       { transform: translateX(5px); }
+}
+
+.pin-error {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: 0.72rem;
+  color: rgba(220, 110, 90, 0.8);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  letter-spacing: 0.05em;
+  height: 1em;
+}
+
+/* Keypad grid */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+  max-width: 256px;
+  margin-top: 4px;
+}
+
+.key {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201, 168, 68, 0.35);
+  background: rgba(201, 168, 68, 0.04);
+  color: var(--cream);
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1.15rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s, transform 0.08s;
+  user-select: none;
+}
+
+.key:not(.key-blank):active {
+  background: rgba(201, 168, 68, 0.18);
+  border-color: var(--gold);
+  transform: scale(0.92);
+}
+
+.key.key-blank {
+  border-color: transparent;
+  background: transparent;
+  pointer-events: none;
+}
+
+.key.key-delete {
+  font-size: 1rem;
+  color: rgba(247, 239, 223, 0.45);
+  border-color: rgba(201, 168, 68, 0.18);
+}
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+}
+
+.loading-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 10px;
+}
+
+.loading-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(2) { animation-delay: 0.22s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.44s; }
+
+@keyframes pulse-dot {
+  0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+  40%           { opacity: 1;   transform: scale(1.2); }
+}
+
+.loading-text {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: rgba(247, 239, 223, 0.32);
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+/* ============================================================
+   BOOK SCREEN
+   ============================================================ */
+#book-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(ellipse 80% 70% at 50% 40%, #1c1409 0%, #0a0804 100%);
+}
+
+/* Pages wrapper — the viewport for page slides */
+#pages-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  margin: 14px 16px 0;
+  border-radius: 10px;
+  /* Outer book shadow */
+  box-shadow:
+    0 0 0 1px rgba(201, 168, 68, 0.06),
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Nav bar */
+#nav-bar {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201, 168, 68, 0.28);
+  background: transparent;
+  color: var(--gold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, opacity 0.25s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.nav-btn svg { width: 17px; height: 17px; }
+
+.nav-btn:active {
+  background: rgba(201, 168, 68, 0.1);
+  border-color: var(--gold);
+}
+
+#page-indicator {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: 0.72rem;
+  color: rgba(201, 168, 68, 0.45);
+  letter-spacing: 0.12em;
+  text-align: center;
+  flex: 1;
+}
+
+/* ============================================================
+   PAGE — Base
+   ============================================================ */
+.page {
+  position: absolute;
+  inset: 0;
+  transform: translateX(0);
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 10px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--cream);
+}
+
+/* Subtle warm vignette on pages */
+.page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    transparent 45%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  pointer-events: none;
+  border-radius: 10px;
+}
+
+/* Transition states */
+.page.enter-right { transform: translateX(110%); }
+.page.enter-left  { transform: translateX(-110%); }
+.page.exit-left   { transform: translateX(-110%); }
+.page.exit-right  { transform: translateX(110%); }
+
+/* ============================================================
+   CORNER ORNAMENTS (shared across cover & entry)
+   ============================================================ */
+.corner-ornament {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-color: var(--gold);
+  border-style: solid;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.corner-ornament.tl { top: 14px; left: 14px; border-width: 1.5px 0 0 1.5px; }
+.corner-ornament.tr { top: 14px; right: 14px; border-width: 1.5px 1.5px 0 0; }
+.corner-ornament.bl { bottom: 14px; left: 14px; border-width: 0 0 1.5px 1.5px; }
+.corner-ornament.br { bottom: 14px; right: 14px; border-width: 0 1.5px 1.5px 0; }
+
+/* ============================================================
+   COVER PAGE
+   ============================================================ */
+.page-cover {
+  position: relative;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 52px 36px 52px;
+  background: linear-gradient(160deg, #faf3e6 0%, #f0e3c8 100%);
+  gap: 0;
+}
+
+/* Polaroid photo wrapper */
+.photo-wrapper {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+/* Washi tape strips */
+.photo-tape {
+  position: absolute;
+  width: 46px;
+  height: 15px;
+  background: rgba(201, 168, 68, 0.28);
+  border-radius: 2px;
+  z-index: 2;
+}
+
+.photo-tape.left {
+  top: -8px;
+  left: 20px;
+  transform: rotate(-7deg);
+}
+
+.photo-tape.right {
+  top: -6px;
+  right: 20px;
+  transform: rotate(5deg);
+}
+
+/* Polaroid frame */
+.photo-frame {
+  width: min(190px, 46vw);
+  aspect-ratio: 1;
+  background: white;
+  padding: 8px 8px 36px;
+  box-shadow:
+    3px 5px 18px rgba(0, 0, 0, 0.22),
+    0 1px 4px rgba(0, 0, 0, 0.1);
+  transform: rotate(-1.5deg);
+}
+
+.cover-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #e8dcc8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 10px;
+}
+
+.photo-placeholder .emoji {
+  font-size: 1.8rem;
+  display: block;
+}
+
+.photo-placeholder .ph-text {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 0.6rem;
+  color: var(--ink-light);
+  line-height: 1.5;
+}
+
+/* Cover text */
+.cover-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.9rem, 7.5vw, 2.7rem);
+  font-weight: 700;
+  color: var(--ink);
+  text-align: center;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.cover-rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 65%;
+  margin-bottom: 16px;
+}
+
+.cover-rule::before,
+.cover-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.55;
+}
+
+.cover-rule-ornament {
+  font-size: 0.45rem;
+  color: var(--gold);
+  letter-spacing: 4px;
+  opacity: 0.75;
+}
+
+.cover-subtitle {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+/* ============================================================
+   ENTRY PAGE
+   ============================================================ */
+.page-entry {
+  position: relative;
+  min-height: 100%;
+  padding: 32px 28px 48px;
+  background: linear-gradient(175deg, #faf4e8 0%, #f2e8d2 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.entry-number {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 0.62rem;
+  color: var(--ink-light);
+  letter-spacing: 0.22em;
+  opacity: 0.55;
+  text-align: right;
+  margin-bottom: 22px;
+}
+
+.entry-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.45rem, 5.5vw, 2rem);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.entry-date {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.05rem;
+  color: var(--gold-dark);
+  letter-spacing: 0.02em;
+  margin-bottom: 18px;
+}
+
+/* Ornamental divider */
+.entry-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.45;
+}
+
+.divider-star {
+  font-size: 0.45rem;
+  color: var(--gold);
+  letter-spacing: 4px;
+  opacity: 0.7;
+}
+
+/* Entry body text */
+.entry-text {
+  font-family: 'Lora', Georgia, serif;
+  font-size: clamp(0.88rem, 3.5vw, 1rem);
+  line-height: 1.85;
+  color: var(--ink-mid);
+  white-space: pre-wrap;
+  flex: 1;
+}
+
+/* ============================================================
+   DESKTOP / TABLET ADJUSTMENTS
+   ============================================================ */
+@media (min-width: 600px) {
+  #pages-wrapper {
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 900px) {
+  #pages-wrapper {
+    max-width: 420px;
+    margin-top: 24px;
+  }
+
+  #nav-bar {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}

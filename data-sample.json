@@ -1,0 +1,24 @@
+{
+  "cover": {
+    "title": "Isla PTSD",
+    "subtitle": "for isla, with love",
+    "photo": ""
+  },
+  "entries": [
+    {
+      "title": "The Night We Met",
+      "date": "Summer 2023",
+      "text": "Write your first memory here.\n\nThis can be as long as you want — the page scrolls automatically. Use \\n\\n for paragraph breaks."
+    },
+    {
+      "title": "Another Memory",
+      "date": "Autumn 2023",
+      "text": "Your second memory goes here. You can have up to 57 entries — just copy this block and add a comma between each one."
+    },
+    {
+      "title": "One More",
+      "date": "Winter 2023",
+      "text": "And another one. The date field is optional — leave it out and it simply won't appear."
+    }
+  ]
+}

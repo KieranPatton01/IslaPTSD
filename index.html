@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Isla PTSD">
+  <meta name="theme-color" content="#0d0a05">
+  <title>Isla PTSD</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ====== PIN SCREEN ====== -->
+  <div id="pin-screen">
+    <div class="pin-bg-glow"></div>
+    <div class="pin-card">
+      <h1 class="pin-title">Isla PTSD</h1>
+      <p class="pin-subtitle">enter the code to open your book</p>
+      <div class="pin-dots" id="pin-dots"></div>
+      <p class="pin-error" id="pin-error">try again, rat</p>
+      <div class="keypad">
+        <button class="key" data-val="1">1</button>
+        <button class="key" data-val="2">2</button>
+        <button class="key" data-val="3">3</button>
+        <button class="key" data-val="4">4</button>
+        <button class="key" data-val="5">5</button>
+        <button class="key" data-val="6">6</button>
+        <button class="key" data-val="7">7</button>
+        <button class="key" data-val="8">8</button>
+        <button class="key" data-val="9">9</button>
+        <button class="key key-blank"></button>
+        <button class="key" data-val="0">0</button>
+        <button class="key key-delete" id="key-delete">⌫</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== LOADING SCREEN ====== -->
+  <div id="loading-screen" class="hidden">
+    <div class="loading-inner">
+      <div class="loading-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <p class="loading-text">opening your book...</p>
+    </div>
+  </div>
+
+  <!-- ====== BOOK SCREEN ====== -->
+  <div id="book-screen" class="hidden">
+    <div id="pages-wrapper"></div>
+    <div id="nav-bar">
+      <button id="btn-prev" class="nav-btn" aria-label="Previous page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      <div id="page-indicator"></div>
+      <button id="btn-next" class="nav-btn" aria-label="Next page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
