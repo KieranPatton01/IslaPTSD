@@ -10,7 +10,7 @@
    ============================================================ */
 
 const PIN      = '2802';          // ← set your PIN here
-const GIST_URL = 'https://gist.githubusercontent.com/KieranPatton01/552ef018e65064b38dd46ed29ea0bb3d/raw/440af1a7e147be1ae5d09e9fe5d488f9fab21699/gistfile1.txt'; // ← paste raw Gist URL here
+const GIST_URL = 'https://gist.githubusercontent.com/KieranPatton01/552ef018e65064b38dd46ed29ea0bb3d/raw/gistfile1.txt'; // ← paste raw Gist URL here
 
 /* ============================================================
    STATE
