@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initKeyboard();
   registerSW();
 
-  document.getElementById('btn-home').addEventListener('click', () => navigateTo(0));
+  document.getElementById('btn-home').addEventListener('click', () => navigateTo(1)); //home button navigates to contents page
   document.getElementById('btn-prev').addEventListener('click', () => navigate('prev'));
   document.getElementById('btn-next').addEventListener('click', () => navigate('next'));
 });
