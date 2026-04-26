@@ -2,7 +2,7 @@
    ISLA PTSD — Service Worker
    ============================================================ */
 
-const CACHE_NAME = 'isla-ptsd-v1';
+const CACHE_NAME = 'isla-ptsd-v2';
 const ASSETS = [
   './',
   './index.html',

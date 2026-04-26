@@ -124,7 +124,7 @@ async function loadBook() {
     loadingEl.innerHTML = `
       <div class="loading-inner">
         <p class="loading-text" style="color:rgba(220,100,80,0.75)">
-          couldn't open the book.<br>
+          couldn't open the sookbook.<br>
           <small style="opacity:0.6;font-size:0.7em">needs internet on first open</small>
         </p>
       </div>`;
@@ -249,7 +249,7 @@ function buildCover(d) {
     ? `<img src="${d.photo}" alt="Us" class="cover-photo">`
     : `<div class="photo-placeholder">
          <span class="emoji">📷</span>
-         <span class="ph-text">add your photo URL to the Gist</span>
+         <span class="ph-text">check gist img url</span>
        </div>`;
 
   return `
@@ -334,8 +334,10 @@ function updateIndicator() {
 }
 
 function updateNavButtons() {
+  const home = document.getElementById('btn-home');
   const prev = document.getElementById('btn-prev');
   const next = document.getElementById('btn-next');
+  home.style.opacity = currentIndex === 0               ? '0.2' : '1';
   prev.style.opacity = currentIndex === 0               ? '0.2' : '1';
   next.style.opacity = currentIndex === pages.length - 1 ? '0.2' : '1';
 }
@@ -392,6 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initKeyboard();
   registerSW();
 
+  document.getElementById('btn-home').addEventListener('click', () => navigateTo(0));
   document.getElementById('btn-prev').addEventListener('click', () => navigate('prev'));
   document.getElementById('btn-next').addEventListener('click', () => navigate('next'));
 });

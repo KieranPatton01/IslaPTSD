@@ -24,7 +24,7 @@
       <h1 class="pin-title">Isla PTSD</h1>
       <p class="pin-subtitle">enter the code to open your book</p>
       <div class="pin-dots" id="pin-dots"></div>
-      <p class="pin-error" id="pin-error">try again, rat</p>
+      <p class="pin-error" id="pin-error">try again, love</p>
       <div class="keypad">
         <button class="key" data-val="1">1</button>
         <button class="key" data-val="2">2</button>
@@ -48,7 +48,7 @@
       <div class="loading-dots">
         <span></span><span></span><span></span>
       </div>
-      <p class="loading-text">I wonder where you are now?</p>
+      <p class="loading-text">opening your book...</p>
     </div>
   </div>
 
@@ -56,6 +56,12 @@
   <div id="book-screen" class="hidden">
     <div id="pages-wrapper"></div>
     <div id="nav-bar">
+      <button id="btn-home" class="nav-btn" aria-label="Go to cover">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/>
+          <path d="M9 21V12h6v9"/>
+        </svg>
+      </button>
       <button id="btn-prev" class="nav-btn" aria-label="Previous page">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 18l-6-6 6-6"/>
